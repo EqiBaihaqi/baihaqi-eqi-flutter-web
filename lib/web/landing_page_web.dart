@@ -1,5 +1,7 @@
 import 'package:baihaqi_akbar/web/component.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LandingPageWeb extends StatefulWidget {
   const LandingPageWeb({super.key});
@@ -9,12 +11,28 @@ class LandingPageWeb extends StatefulWidget {
 }
 
 class LandingPageWebState extends State<LandingPageWeb> {
+  urlLauncher(String imgPath, String url) {
+    return IconButton(
+      onPressed: () async {
+        final urlsm = Uri.parse(url);
+        if (await canLaunchUrl(urlsm)) {
+          await launchUrl(urlsm, mode: LaunchMode.externalApplication);
+        } else {
+          print('Could not launch $url');
+        }
+      },
+      icon: SvgPicture.asset(
+        imgPath,
+        width: 35,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     var heightDevice = MediaQuery.of(context).size.height;
     var widthDevice = MediaQuery.of(context).size.width;
     return Scaffold(
-      drawer: const Drawer(),
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -24,7 +42,9 @@ class LandingPageWebState extends State<LandingPageWeb> {
           color: Colors.black,
         ),
         title: const Row(
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
+            Spacer(),
             TabsWeb(title: 'Home'),
             Spacer(),
             TabsWeb(title: 'Works'),
@@ -35,6 +55,47 @@ class LandingPageWebState extends State<LandingPageWeb> {
             Spacer(),
             TabsWeb(title: 'Contact'),
             Spacer(),
+          ],
+        ),
+      ),
+      drawer: Drawer(
+        backgroundColor: Colors.white,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const CircleAvatar(
+              radius: 72,
+              backgroundColor: Colors.tealAccent,
+              child: CircleAvatar(
+                radius: 70,
+                backgroundColor: Colors.white,
+                backgroundImage: AssetImage('assets/me.jpg'),
+              ),
+            ),
+            const SizedBox(
+              height: 15.0,
+            ),
+            const SansBold(text: "Al Akbar B.", size: 30.0),
+            const SizedBox(
+              height: 15.0,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                urlLauncher(
+                  'assets/instagram.svg',
+                  'https://www.instagram.com/alakbarz/',
+                ),
+                urlLauncher(
+                  'assets/github.svg',
+                  'https://github.com/EqiBaihaqi',
+                ),
+                urlLauncher(
+                  'assets/linkedin.svg',
+                  'https://www.linkedin.com/in/al-akbar/',
+                )
+              ],
+            )
           ],
         ),
       ),
